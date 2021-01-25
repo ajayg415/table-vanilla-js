@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>CSV File to HTML Table Using AJAX jQuery</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+ </head>
+ <body>
+  <div class="container">
+   <div class="table-responsive">
+    <h1 align="center">CSV File to HTML Table Using AJAX jQuery</h1>
+    <br />
+    <div align="center">
+     <button type="button" name="load_data" id="load_data" class="btn btn-info">Load Data</button>
+    </div>
+    <br />
+    <div id="table-wrapper">
+    </div>
+   </div>
+  </div>
+ </body>
+</html>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function() {
+		const headers = ['Name', 'Address', 'Gender', 'Designation', 'Age'] // Change the keys accordign to file, case sensetive
+		const apiURL = `https://api.npoint.io/a0e3e16ad4002bdf10ea`
+		const tableDiv = document.getElementById('table-wrapper')
+	 	const table = document.createElement('table')
+	 	table.className = 'table table-bordered table-striped'
+		tableDiv.appendChild(table)
+
+		const fetchData = async () => {
+			const resp = await fetch(apiURL)
+			return await resp.json()
+		}
+
+		const generateHeaders = () => {
+			const theader = document.createElement('thead')
+			const trEle = document.createElement('tr')
+			headers.forEach(x=> {
+				const cell = document.createElement('td')
+				cell.innerHTML = x
+				trEle.appendChild(cell)
+			})
+			theader.appendChild(trEle)
+			table.appendChild(theader)
+		}
+
+		const generateBody = data => {
+			const tbodyEle = document.createElement('tbody')
+			data.forEach(row => {
+				const trEle = document.createElement('tr')
+				for(let i=0;i<Object.keys(row).length;i++ ){
+					const cell = document.createElement('td');
+					cell.innerHTML = row[headers[i]]
+					trEle.appendChild(cell)
+				}
+				tbodyEle.appendChild(trEle)
+			})
+			table.appendChild(tbodyEle)
+		}
+
+  	document.getElementById('load_data').addEventListener('click', async () => {
+  		const data = await fetchData()
+  		console.log(data)
+			generateHeaders();
+			generateBody(data)
+  	})
+
+	});
+</script>
